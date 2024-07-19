@@ -1,0 +1,16 @@
+{
+    "name": "com.firehoundgames.embertoolkit.encryption",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1f4d690e13298d9409bb6c59b2f1a30f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

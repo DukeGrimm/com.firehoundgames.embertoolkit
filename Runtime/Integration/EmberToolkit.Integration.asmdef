@@ -1,0 +1,18 @@
+{
+    "name": "com.firehoundgames.embertoolkit.integration",
+    "rootNamespace": "EmberToolkit.Integration",
+    "references": [
+        "GUID:1f4d690e13298d9409bb6c59b2f1a30f",
+        "GUID:aeab864fae1028b45aa575e437f4d68a",
+        "GUID:6893dd4b6bafd634bafa01e0dc2af288"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

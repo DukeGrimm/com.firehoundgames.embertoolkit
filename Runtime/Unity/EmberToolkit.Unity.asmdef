@@ -1,0 +1,40 @@
+{
+    "name": "com.firehoundgames.embertoolkit.unity",
+    "rootNamespace": "EmberToolkit.Unity",
+    "references": [
+        "GUID:1f4d690e13298d9409bb6c59b2f1a30f",
+        "GUID:aeab864fae1028b45aa575e437f4d68a",
+        "GUID:7c990fc8834c7e248b5070cc1e36e74c"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "EmbeddedLinux",
+        "GameCoreScarlett",
+        "GameCoreXboxOne",
+        "iOS",
+        "LinuxStandalone64",
+        "CloudRendering",
+        "macOSStandalone",
+        "PS4",
+        "PS5",
+        "QNX",
+        "Stadia",
+        "Switch",
+        "tvOS",
+        "WSA",
+        "VisionOS",
+        "WebGL",
+        "WindowsStandalone32",
+        "WindowsStandalone64",
+        "XboxOne"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
