@@ -3,6 +3,7 @@ using EmberToolkit.Common.Interfaces.Game;
 using EmberToolkit.Common.Interfaces.Unity.Behaviours.Managers.Game;
 using EmberToolkit.Unity.Behaviours;
 using EmberToolkit.Unity.GameStates;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace GuildLegends.Game.GameStates
 {
     public abstract class GameStateManager<T> : EmberSingleton, IGameStateManager<T>
     {
-
+        
+        [ShowInInspector, ReadOnly]
         protected Dictionary<T, GameState<T>> _GameStates = new Dictionary<T, GameState<T>>();
         private bool _Initialized;
 
