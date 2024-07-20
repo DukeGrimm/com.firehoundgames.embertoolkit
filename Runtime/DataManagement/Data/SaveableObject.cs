@@ -1,5 +1,6 @@
 ﻿using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
+using Sirenix.OdinInspector;
 using System;
 using System.Reflection;
 
@@ -9,10 +10,11 @@ namespace EmberToolkit.DataManagement.Data
     {
         private ISaveLoadEvents _events;
         private ISaveableObjectRepository _repo;
+        [ShowInInspector, ReadOnly]
         public Guid Id { get; private set; }   
 
         public Type ItemType => GetType();
-
+        [ShowInInspector, ReadOnly]
         public string Name => nameof(ItemType);
 
         public SaveableObject(Guid objId, ISaveLoadEvents saveLoadEvents = null, ISaveableObjectRepository repo = null)
