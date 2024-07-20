@@ -8,6 +8,7 @@ namespace EmberToolkit.Unity.GameStates
 {
     public abstract class GameState<T> : IGameState<T>
     {
+        protected abstract string _name { get; }
         //protected MasterInputController masterInput;
         //protected IEmberInputManager _inputManager;
         public abstract T State { get; }
