@@ -9,15 +9,19 @@ namespace EmberToolkit.Common.DataTypes
 {
     public class UDateTime
     {
-        [OdinSerialize]
+        [OdinSerialize][ValueDropdown("GetYears")]
         public int Year;
         [OdinSerialize]
+        [ValueDropdown("GetMonths")]
         public int Month;
         [OdinSerialize]
+        [ValueDropdown("GetDays")]
         public int Day;
         [OdinSerialize]
+        [ValueDropdown("GetHours")]
         public int Hour;
         [OdinSerialize]
+        [ValueDropdown("GetMinutes")]
         public int Minute;
 
         public UDateTime() {             
@@ -126,6 +130,59 @@ namespace EmberToolkit.Common.DataTypes
             Day = inputTime.Day;
             Hour = inputTime.Hour;
             Minute = inputTime.Minute;
+        }
+
+        private static int[] GetYears()
+        {
+            int startYear = 2030;
+            int endYear = 2077;
+            int[] years = new int[endYear - startYear + 1];
+
+            for (int i = 0; i < years.Length; i++)
+            {
+                years[i] = startYear + i;
+            }
+
+            return years;
+        }
+        private static int[] GetMonths()
+        {
+            int[] months = new int[12];
+            for (int i = 0; i < 12; i++)
+            {
+                months[i] = i + 1;
+            }
+            return months;
+        }
+
+        private static int[] GetDays()
+        {
+            int[] days = new int[31];
+            for (int i = 0; i < 31; i++)
+            {
+                days[i] = i + 1;
+            }
+            return days;
+        }
+
+        private static int[] GetHours()
+        {
+            int[] hours = new int[24];
+            for (int i = 0; i < 24; i++)
+            {
+                hours[i] = i;
+            }
+            return hours;
+        }
+
+        private static int[] GetMinutes()
+        {
+            int[] minutes = new int[60];
+            for (int i = 0; i < 60; i++)
+            {
+                minutes[i] = i;
+            }
+            return minutes;
         }
     }
 }
