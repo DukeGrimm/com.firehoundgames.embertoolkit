@@ -108,6 +108,6 @@ namespace EmberToolkit.Common.DataTypes
             Day = inputTime.Day;
             Hour = inputTime.Hour;
             Minute = inputTime.Minute;
-        }}
+        }
     }
 }
