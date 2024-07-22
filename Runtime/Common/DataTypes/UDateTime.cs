@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,10 +9,15 @@ namespace EmberToolkit.Common.DataTypes
 {
     public class UDateTime
     {
+        [OdinSerialize]
         public int Year;
+        [OdinSerialize]
         public int Month;
+        [OdinSerialize]
         public int Day;
+        [OdinSerialize]
         public int Hour;
+        [OdinSerialize]
         public int Minute;
 
         public UDateTime() {             
@@ -102,6 +109,7 @@ namespace EmberToolkit.Common.DataTypes
 
 
         // Property to translate the UDateTime values into a DateTime
+        [HideInEditorMode]
         public DateTime DateTime
         {
             get
