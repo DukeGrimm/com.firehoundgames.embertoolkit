@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,16 @@ namespace EmberToolkit.Common.DataTypes
         public int Hour;
         public int Minute;
 
+        public UDateTime() {             
+            Year = 0;
+            Month = 0;
+            Day = 0;
+            Hour = 0;
+            Minute = 0;
+        }
+
         // Constructor to initialize the values
+        [JsonConstructor]
         public UDateTime(int year, int month, int day, int hour, int minute)
         {
             Year = year;
