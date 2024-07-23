@@ -55,14 +55,14 @@ namespace EmberToolkit.DataManagement.Data
                     if (field != null)
                     {
                         object value = savedField.Value;
-
+                        throw new NotImplementedException("Need to implement this part");
                         // Check if the value is a JToken (which includes JObject and JArray)
                         if (value is Newtonsoft.Json.Linq.JToken token)
                         {
                             try
                             {
                                 object convertedValue;
-                               throw new NotImplementedException("Need to implement this part");
+
                                 // Special handling for Guid fields
                                 if (field.FieldType == typeof(System.Guid))
                                 {
