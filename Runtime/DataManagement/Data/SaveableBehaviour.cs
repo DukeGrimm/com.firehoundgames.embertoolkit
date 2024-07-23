@@ -47,14 +47,36 @@ namespace EmberToolkit.DataManagement.Data
 
         public bool ApplySavedFields(IEmberBehaviour instance)
         {
-            if(BehaviourType == instance.ItemType)
+            if (BehaviourType == instance.ItemType)
             {
                 foreach (KeyValuePair<string, object> savedField in SaveableFields)
                 {
                     FieldInfo field = BehaviourType.GetField(savedField.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (field != null)
                     {
-                        field.SetValue(instance, savedField.Value);
+                        object value = savedField.Value;
+
+                        // Check if the value is a JToken (which includes JObject and JArray)
+                        if (value is Newtonsoft.Json.Linq.JToken token)
+                        {
+                            try
+                            {
+                                // Attempt to convert the JToken to the expected field type
+                                object convertedValue = token.ToObject(field.FieldType);
+                                field.SetValue(instance, convertedValue);
+                            }
+                            catch (Exception ex)
+                            {
+                                // Handle or log the exception as needed
+                                Console.WriteLine($"Error converting field {field.Name}: {ex.Message}");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            // If it's not a JToken, proceed as before
+                            field.SetValue(instance, value);
+                        }
                     }
                 }
                 return true;
