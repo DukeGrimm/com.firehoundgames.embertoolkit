@@ -4,8 +4,6 @@ using EmberToolkit.Common.Interfaces.Encryption;
 using EmberToolkit.Common.Interfaces.Serialization;
 using EmberToolkit.DataManagement.Data;
 using Newtonsoft.Json;
-using Sirenix.Serialization;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -28,9 +26,8 @@ namespace EmberToolkit.DataManagement.Serializers
         private void SerializeData<T>(T data, string name)
         {
             string filePath = GetFilePath(name);
-            byte[] payloadBytes = SerializationUtility.SerializeValue<T>(data, DataFormat.JSON);
-            string payload = System.Text.Encoding.UTF8.GetString(payloadBytes);//JsonConvert.SerializeObject(data, Formatting.None);
-            if (useEncrypt) payload = _aesController.EncryptData(payload);
+            string payload = JsonConvert.SerializeObject(data, Formatting.None);
+            if(useEncrypt) payload = _aesController.EncryptData(payload);
             File.WriteAllText(filePath, payload);
         }
 
