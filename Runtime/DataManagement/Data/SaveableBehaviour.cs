@@ -62,7 +62,7 @@ namespace EmberToolkit.DataManagement.Data
                             try
                             {
                                 object convertedValue;
-
+                               throw new NotImplementedException("Need to implement this part");
                                 // Special handling for Guid fields
                                 if (field.FieldType == typeof(System.Guid))
                                 {
