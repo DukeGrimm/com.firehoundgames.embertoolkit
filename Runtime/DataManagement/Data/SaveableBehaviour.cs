@@ -61,8 +61,20 @@ namespace EmberToolkit.DataManagement.Data
                         {
                             try
                             {
-                                // Attempt to convert the JToken to the expected field type
-                                object convertedValue = token.ToObject(field.FieldType);
+                                object convertedValue;
+
+                                // Special handling for Guid fields
+                                if (field.FieldType == typeof(System.Guid))
+                                {
+                                    string guidString = token.ToString();
+                                    convertedValue = Guid.Parse(guidString);
+                                }
+                                else
+                                {
+                                    // Attempt to convert the JToken to the expected field type for other types
+                                    convertedValue = token.ToObject(field.FieldType);
+                                }
+
                                 field.SetValue(instance, convertedValue);
                             }
                             catch (Exception ex)
@@ -83,8 +95,6 @@ namespace EmberToolkit.DataManagement.Data
             }
 
             return false;
-
-
         }
     }
 }
