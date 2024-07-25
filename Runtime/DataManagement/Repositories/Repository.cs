@@ -1,5 +1,6 @@
 ﻿using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace EmberToolkit.DataManagement.Repositories
     public class Repository<T> : IRepository<T> where T : IEmberObject
     {
         private ISaveLoadEvents _saveLoadEvents;
+        [ShowInInspector]
         protected Dictionary<Guid, T> _entities = new Dictionary<Guid, T>();
 
         public bool ShouldSave { get; private set; }
