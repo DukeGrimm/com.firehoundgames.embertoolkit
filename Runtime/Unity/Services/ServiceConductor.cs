@@ -28,6 +28,18 @@ namespace EmberToolkit.Unity.Services
             // Automatically register implemented interfaces and their derived interfaces
             RegisterInterfaces(serviceType, service);
         }
+        /// <summary>
+        /// Only use this method to register services that are not interfaces or have no interfaces.
+        /// Such as Random, or other services that are not interfaces.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="service"></param>
+        /// <param name="serviceType"></param>
+        public static void RegisterThisTypeOnly<T>(T service, Type serviceType = null)
+        {
+            if (serviceType == null) serviceType = typeof(T);
+            services[serviceType] = service;
+        }
 
         private static void RegisterInterfaces(Type serviceType, object service)
         {
