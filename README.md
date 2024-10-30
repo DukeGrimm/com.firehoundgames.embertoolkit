@@ -26,11 +26,3 @@ To integrate Ember Toolkit into your Unity project, follow these steps:
 ## Documentation
 
 For detailed documentation on each component and service, refer to the inline comments within each class and interface. The toolkit is designed to be self-explanatory, with clear naming conventions and comprehensive comments guiding you through its usage.
-
-## Contributing
-
-Contributions to Ember Toolkit are welcome! Whether it's through submitting bug reports, feature requests, or pull requests, your input is valuable in making this toolkit more robust and versatile.
-
-## License
-
-Ember Toolkit is licensed under [MIT License](LICENSE.md). Feel free to use, modify, and distribute it as part of your projects.
