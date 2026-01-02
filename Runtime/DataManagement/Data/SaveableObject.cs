@@ -13,10 +13,6 @@ namespace EmberToolkit.DataManagement.Data
         [ShowInInspector, ReadOnly]
         public Guid Id { get; private set; }   
 
-        public Type ItemType => GetType();
-        [ShowInInspector, ReadOnly]
-        public string Name => nameof(ItemType);
-
         public SaveableObject(Guid objId, ISaveLoadEvents saveLoadEvents = null, ISaveableObjectRepository repo = null)
         {
             Id = objId != Guid.Empty ? objId : Guid.NewGuid();
@@ -52,13 +48,13 @@ namespace EmberToolkit.DataManagement.Data
             }
         }
 
-        public void Save(IDataRepository repo)
+        public void Save()
         {
             if (_repo == null) return;
             _repo.SaveObject(this);
         }
 
-        public void Load(IDataRepository repo)
+        public void Load()
         {
             if (_repo == null) return;
             _repo.LoadObject(this);

@@ -9,6 +9,6 @@ namespace EmberToolkit.DataManagement.Data
 {
     public class StorageContainer : IStorageContainer
     {
-        public Dictionary<Type, object> RepositoryContainer { get; set; } = new Dictionary<Type, object>();
+        public Dictionary<Guid, object> RepositoryContainer { get; set; } = new Dictionary<Guid, object>();
     }
 }

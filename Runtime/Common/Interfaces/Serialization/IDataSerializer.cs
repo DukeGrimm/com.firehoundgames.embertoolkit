@@ -10,6 +10,8 @@ namespace EmberToolkit.Common.Interfaces.Serialization
         void SerializeObject<T>(T objData, string filePath);
         T DeserializeObject<T>(string filePath);
         List<T> DeserializeAllObjects<T>(string extension);
+        void AddDictionaryConvertor<T>();
+        public T ConvertObject<T>(string jsonData);
 
     }
 }

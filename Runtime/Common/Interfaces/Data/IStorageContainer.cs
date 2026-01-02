@@ -8,6 +8,6 @@ namespace EmberToolkit.Common.Interfaces.Data
 {
     public interface IStorageContainer
     {
-        public Dictionary<Type, object> RepositoryContainer { get; }
+        public Dictionary<Guid, object> RepositoryContainer { get; }
     }
 }

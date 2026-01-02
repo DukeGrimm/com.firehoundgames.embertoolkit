@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EmberToolkit.Common.Interfaces.Repository
 {
-    public interface IRepository<T>
+    public interface IRepository<T> : IEmberObject
     {
         //// Adds a new entity to the repository
         //protected void Add(T entity);
@@ -28,7 +28,7 @@ namespace EmberToolkit.Common.Interfaces.Repository
         //protected void Delete(Guid id);
         bool ShouldSave { get; }
 
-        void Save(IDataRepository dataRepo);
-        void Load(IDataRepository dataRepo);
+        void Save();
+        void Load();
     }
 }

@@ -4,8 +4,8 @@ namespace EmberToolkit.Common.Interfaces.Data
 {
     public interface ISaveableObject : IEmberObject
     {
-        void Save(IDataRepository repo);
-        void Load(IDataRepository repo);
+        void Save();
+        void Load();
         void MapFromPayload(object source);
     }
 }

@@ -8,25 +8,36 @@ using System.Reflection;
 
 namespace EmberToolkit.DataManagement.Data
 {
+    /// <summary>
+    /// Helper DTO for persisting MonoBehaviour state.
+    /// 
+    /// Purpose:
+    /// - Extracts fields marked with [SaveField] from an IEmberBehaviour and stores them
+    ///   in a serializable form (SaveableFields dictionary) together with a GUID.
+    /// - Applies saved values back to a matching IEmberBehaviour instance (ApplySavedFields).
+    /// 
+    /// Notes:
+    /// - Values stored in SaveableFields may be raw CLR values or JSON tokens (JToken) after deserialization.
+    /// - ApplySavedFields includes conversion logic (e.g. JToken -> target field type, Guid parsing).
+    /// - Intended as a lightweight transfer object used by repositories/serializers to separate
+    ///   persistence concerns from runtime Behaviour implementations.
+    /// </summary>
     [Serializable]
     public class SaveableBehaviour : ISaveableBehaviour
     {
         public Guid Id { get; set; }
-        public Type ItemType { get; set; }
         public Dictionary<string, object> SaveableFields { get; set; } = new Dictionary<string, object>();
         public Type BehaviourType { get; set; }
-
-        public string Name => nameof(ItemType);
 
         public SaveableBehaviour() {
         
         }
 
-        public SaveableBehaviour(IEmberBehaviour targetBehaviour)
+        public SaveableBehaviour(Type targetType, IEmberBehaviour targetBehaviour)
         {
             Id = targetBehaviour.Id;
-            ItemType = this.GetType();
-            BehaviourType = targetBehaviour.ItemType;
+            //There may have been issues serializing Type directly.
+            BehaviourType = targetType;
             ExtractSaveableFields(targetBehaviour);
         }
 
@@ -45,13 +56,14 @@ namespace EmberToolkit.DataManagement.Data
             }
         }
 
-        public bool ApplySavedFields(IEmberBehaviour instance)
+        public bool ApplySavedFields(Type targetType, IEmberBehaviour instance)
         {
-            if (BehaviourType == instance.ItemType)
+            //Using TargetType to avoid issues with Type serialization.
+            if (Id == instance.Id)
             {
                 foreach (KeyValuePair<string, object> savedField in SaveableFields)
                 {
-                    FieldInfo field = BehaviourType.GetField(savedField.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    FieldInfo field = targetType.GetField(savedField.Key, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (field != null)
                     {
                         object value = savedField.Value;

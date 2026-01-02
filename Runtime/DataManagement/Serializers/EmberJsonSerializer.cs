@@ -3,9 +3,11 @@ using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Encryption;
 using EmberToolkit.Common.Interfaces.Serialization;
 using EmberToolkit.DataManagement.Data;
+using EmberToolkit.DataManagement.Serializers.Converters;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace EmberToolkit.DataManagement.Serializers
 {
@@ -15,12 +17,39 @@ namespace EmberToolkit.DataManagement.Serializers
         private IAESController _aesController;
         private bool useEncrypt = false;
 
+        // expose and reuse these settings across the codebase
+        public JsonSerializerSettings _settings { get; }
+
         public EmberJsonSerializer(IEmberSettings settings, IAESController aesController)
         {
             _saveFileLocation = settings.SavePath;
             _aesController = aesController;
             useEncrypt = settings.useEncryption;
+
+            // configure centralized settings (add converters here)
+            var s = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.None // prefer explicit ItemType in payloads
+            };
+
+            _settings = s;
+
             ValidateDirectory();
+        }
+
+        public bool ConverterCheck<T>()
+        {
+            if (_settings != null && _settings.Converters != null)
+            {
+                foreach (var converter in _settings.Converters)
+                {
+                    if (converter is T)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void SerializeData<T>(T data, string name)
@@ -86,6 +115,19 @@ namespace EmberToolkit.DataManagement.Serializers
             {
                 Directory.CreateDirectory(_saveFileLocation);
             }
+        }
+
+        public void AddDictionaryConvertor<T>()
+        {
+            if (!ConverterCheck<T>())
+            {
+                // Add converter to settings
+                _settings.Converters.Add(new DictionaryJsonConverter<T>());
+            }
+        }
+        public T ConvertObject<T>(string jsonData)
+        {
+            return JsonConvert.DeserializeObject<T>(jsonData, _settings);
         }
     }
 }

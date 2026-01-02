@@ -1,29 +1,51 @@
 ﻿using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
 using Sirenix.OdinInspector;
+using Sirenix.OdinInspector.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace EmberToolkit.DataManagement.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : IEmberObject
+    public abstract class Repository<T> : IRepository<T> where T : IEmberObject
     {
         private ISaveLoadEvents _saveLoadEvents;
+        private IDataRepository _dataRepo;
         [ShowInInspector]
         protected Dictionary<Guid, T> _entities = new Dictionary<Guid, T>();
 
         public bool ShouldSave { get; private set; }
 
-        public Repository(ISaveLoadEvents saveLoadEvents, bool shouldSave = true)
+        public Guid Id { get; private set; }
+
+        public Repository(ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo, bool shouldSave = true, Guid repoId = new Guid())
         {
             _saveLoadEvents = saveLoadEvents;
+            _dataRepo = dataRepo;
+            if (repoId != Guid.Empty)
+            {
+                Id = repoId;
+                InitializeRepository(repoId);
+            }
+            else
+            {
+                Id = Guid.NewGuid();
+                InitializeRepository(Id);
+            }
+
             ShouldSave = shouldSave;
             if (shouldSave)
             {
                 _saveLoadEvents.OnSaveEvent += Save;
                 _saveLoadEvents.OnLoadEvent += Load;
             }
+        }
+
+        protected virtual void InitializeRepository(Guid id)
+        {
+            Id = id;
+            _dataRepo.AddDictionaryConvertor<T>();
         }
 
         protected void Add(T entity) => _entities.Add(entity.Id, entity);
@@ -50,16 +72,16 @@ namespace EmberToolkit.DataManagement.Repositories
         /// <summary>
         /// Attempt to load data from DataRepo
         /// </summary>
-        public void Load(IDataRepository dataRepo)
+        public void Load()
         {
-           var loadedData = dataRepo.GetRepositoryData<T>();
+           var loadedData = _dataRepo.GetRepositoryData<T>(Id);
             if (loadedData != null) _entities = loadedData;
 
         }
         /// <summary>
         /// Send Data to DataRepo to be saved.
         /// </summary>
-        public virtual void Save(IDataRepository dataRepo) =>  dataRepo.AddRepository<T>(_entities);
+        public virtual void Save() =>  _dataRepo.AddRepository<T>(Id, _entities);
 
         protected void Update(T entity)
         {

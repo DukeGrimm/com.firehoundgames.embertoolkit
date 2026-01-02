@@ -5,7 +5,8 @@ namespace EmberToolkit.Common.Interfaces.Repository
     public interface IEmberObject
     {
         Guid Id { get; }
-        Type ItemType { get; }
-        string Name { get; }
+        //Removed for simplicity
+        //Type ItemType { get; }
+        //string Name { get; }
     }
 }

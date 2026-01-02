@@ -21,14 +21,14 @@ namespace EmberToolkit.DataManagement.Controllers
 
         public void Save(string fileName)
         {
-            OnSaveEvent?.Invoke(_dataRepo);
+            OnSaveEvent?.Invoke();
             _dataRepo.Save(fileName);
         }
 
         public void Load(string fileName)
         {
             _dataRepo.Load(fileName);
-            OnLoadEvent?.Invoke(_dataRepo);
+            OnLoadEvent?.Invoke();
         }
 
         public void SaveObject<T>(T objData, string filePath) => _dataRepo.SaveObject(objData, filePath);

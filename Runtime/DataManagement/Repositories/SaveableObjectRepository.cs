@@ -10,7 +10,7 @@ namespace EmberToolkit.DataManagement.Repositories
 {
     public class SaveableObjectRepository : Repository<ISaveableObject>, ISaveableObjectRepository
     {
-        public SaveableObjectRepository(ISaveLoadEvents saveLoadEvents) : base(saveLoadEvents)
+        public SaveableObjectRepository(ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo) : base(saveLoadEvents, dataRepo)
         {
         }
 

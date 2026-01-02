@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace EmberToolkit.Unity.Behaviours
 {
-    public class EmberBehaviour : SerializedMonoBehaviour, IEmberBehaviour
+    public abstract class EmberBehaviour : SerializedMonoBehaviour, IEmberBehaviour
     {
         protected List<EventSubscription> eventSubscriptions = new List<EventSubscription>();
         protected List<EventSubscription> eventSubscriptionsWithArgs = new List<EventSubscription>();
@@ -32,7 +32,7 @@ namespace EmberToolkit.Unity.Behaviours
         [OdinSerialize]
         protected bool SaveObject = false;
 
-        public Type ItemType => this.GetType();
+        public virtual Type ItemType => GetType();
 
         public Guid Id
         {
@@ -58,8 +58,8 @@ namespace EmberToolkit.Unity.Behaviours
             {
                 RequestService(out _repo);
                 RequestService(out _saveLoadEvents);
-                SubscribeEvent<IDataRepository>(_saveLoadEvents, nameof(_saveLoadEvents.OnSaveEvent), Save);
-                SubscribeEvent<IDataRepository>(_saveLoadEvents, nameof(_saveLoadEvents.OnLoadEvent), Load);
+                SubscribeEvent(_saveLoadEvents, nameof(_saveLoadEvents.OnSaveEvent), Save);
+                SubscribeEvent(_saveLoadEvents, nameof(_saveLoadEvents.OnLoadEvent), Load);
             }
         }
 
@@ -85,7 +85,7 @@ namespace EmberToolkit.Unity.Behaviours
         {
             UnsubscribeEvents(true);
             //Save Data to Repo in case a save event occurs while disabled.
-            if (_repo != null) Save(null);
+            if (_repo != null) Save();
         }
         protected override void OnBeforeSerialize()
         {
@@ -100,9 +100,9 @@ namespace EmberToolkit.Unity.Behaviours
         {
 
         }
-        public virtual void Save(IDataRepository dRepo) => _repo.SaveBehaviour(new SaveableBehaviour(this));
+        public virtual void Save() => _repo.SaveBehaviour(new SaveableBehaviour(ItemType, this));
 
-        public virtual void Load(IDataRepository dRepo) => _repo.LoadBehaviour(id).ApplySavedFields(this);
+        public virtual void Load() => _repo.LoadBehaviour(id).ApplySavedFields(ItemType, this);
 
         public void SetEmberId(byte[] array) => id = new Guid(array);
 

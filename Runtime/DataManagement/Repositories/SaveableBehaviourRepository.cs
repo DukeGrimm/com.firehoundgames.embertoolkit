@@ -10,7 +10,7 @@ namespace EmberToolkit.DataManagement.Repositories
 {
     public class SaveableBehaviourRepository : Repository<ISaveableBehaviour>, ISaveableBehaviourRepository
     {
-        public SaveableBehaviourRepository(ISaveLoadEvents saveLoadEvents, bool shouldSave = true) : base(saveLoadEvents, shouldSave)
+        public SaveableBehaviourRepository(ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo, bool shouldSave = true) : base(saveLoadEvents, dataRepo, shouldSave)
         {
         }
 
