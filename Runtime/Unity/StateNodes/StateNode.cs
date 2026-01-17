@@ -1,12 +1,12 @@
-﻿using EmberToolkit.Common.Enum.Game;
-using EmberToolkit.Common.Interfaces.Game;
+﻿using EmberToolkit.Common.Enum.StateNodes;
+using EmberToolkit.Common.Interfaces.StateNodes;
 using EmberToolkit.Unity.Services;
 using System;
 using UnityEngine;
 
-namespace EmberToolkit.Unity.GameStates
+namespace EmberToolkit.Unity.StateNodes
 {
-    public abstract class GameState<T> : IGameState<T>
+    public abstract class StateNode<T> : IStateNode<T>
     {
 
         //protected MasterInputController masterInput;
@@ -18,9 +18,9 @@ namespace EmberToolkit.Unity.GameStates
         public abstract event Action OnStateEntered;
         public abstract event Action OnStateExited;
 
-        public abstract void ProcessGameStateChange();
+        public abstract void ProcessStateChange();
 
-        public GameState()
+        public StateNode()
         {
             //GetService(out _inputManager);
             //_inputManager.GetInputController(out masterInput);
@@ -28,15 +28,15 @@ namespace EmberToolkit.Unity.GameStates
 
         public abstract void TriggerStateEnd();
 
-        public void SubscribeToStateEvent(Action action, GameStateEvents eventName)
+        public void SubscribeToStateEvent(Action action, StateNodeEvents eventName)
         {
-            if (eventName == GameStateEvents.OnStateEntered) OnStateEntered += action;
-            else if (eventName == GameStateEvents.OnStateExited) OnStateExited += action;
+            if (eventName == StateNodeEvents.OnStateEntered) OnStateEntered += action;
+            else if (eventName == StateNodeEvents.OnStateExited) OnStateExited += action;
         }
-        public void UnsubscribeToStateEvent(Action action, GameStateEvents eventName)
+        public void UnsubscribeToStateEvent(Action action, StateNodeEvents eventName)
         {
-            if (eventName == GameStateEvents.OnStateEntered) OnStateEntered -= action;
-            else if (eventName == GameStateEvents.OnStateExited) OnStateExited -= action;
+            if (eventName == StateNodeEvents.OnStateEntered) OnStateEntered -= action;
+            else if (eventName == StateNodeEvents.OnStateExited) OnStateExited -= action;
         }
 
         #region Services

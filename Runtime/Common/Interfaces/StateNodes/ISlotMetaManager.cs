@@ -1,6 +1,6 @@
 ﻿
 
-namespace EmberToolkit.Common.Interfaces.Game
+namespace EmberToolkit.Common.Interfaces.StateNodes
 {
     public interface ISlotMetaManager
     {

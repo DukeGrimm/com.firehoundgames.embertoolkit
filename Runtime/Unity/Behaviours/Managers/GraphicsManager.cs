@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace EmberToolkit.Unity.Behaviours.Managers
 {
+    //TODO: Can this be an Abstract Class instead?
     public class GraphicsManager : EmberSingleton, IGraphicsManager, IGraphicsOptions
     {
         private List<Resolution> resolutions;
