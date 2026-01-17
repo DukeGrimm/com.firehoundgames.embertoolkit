@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace GuildLegends.Game.StateNodes
+namespace EmberToolkit.Unity.Behaviours.StateNodes
 {
     public abstract class StateNodeManagerBase<T> : EmberSingleton, IStateNodeManager<T>
     {
