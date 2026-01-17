@@ -18,6 +18,7 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         [ShowInInspector, ReadOnly]
         protected Dictionary<T, StateNode<T>> _States = new Dictionary<T, StateNode<T>>();
         private bool _Initialized;
+        private IEnumerable<Type>? stateNodeCache = null;
 
         private T currentState;
 
@@ -29,20 +30,29 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         protected override void Awake()
         {
             base.Awake();
-            if (!_Initialized) InitializeStateNodes(GetStateNodeTypes());
+            if (!_Initialized) InitializeStateNodes();
             //ChangeGameState(GameStateStage.StartUp);
         }
 
-        protected abstract IEnumerable<Type>? GetStateNodeTypes();
+        protected virtual IEnumerable<Type>? GetStateNodeTypes()
+        {
+            if (stateNodeCache == null)
+            {
+                stateNodeCache = GetStateNodeTypes();
+            }
+            //Use the assembly where the GameStates live 
+            return stateNodeCache;
+        }
 
-        protected virtual void InitializeStateNodes(IEnumerable<Type>? stateNodeTypes = null)
+        protected virtual void InitializeStateNodes()
         {
             _States.Clear();
-            if (stateNodeTypes == null)
+            if (stateNodeCache == null)
             {
-                stateNodeTypes = Assembly.GetAssembly(typeof(StateNode<T>)).GetTypes().Where(t => typeof(StateNode<T>).IsAssignableFrom(t) && t.IsAbstract == false);
+
+                stateNodeCache = Assembly.GetAssembly(typeof(T)).GetTypes().Where(t => typeof(T).IsAssignableFrom(t) && t.IsAbstract == false);
             }
-            foreach(var stateClass in stateNodeTypes)
+            foreach(var stateClass in stateNodeCache)
             {
                 var gState = Activator.CreateInstance(stateClass) as StateNode<T>;
                 _States.Add(gState.State, gState);
