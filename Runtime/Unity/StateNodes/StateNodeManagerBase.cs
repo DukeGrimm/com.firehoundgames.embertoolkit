@@ -17,12 +17,13 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         
         [ShowInInspector, ReadOnly]
         protected Dictionary<T, StateNode<T>> _States = new Dictionary<T, StateNode<T>>();
-        private bool _Initialized;
-        private IEnumerable<Type>? stateNodeCache = null;
+        protected bool _Initialized;
+        protected IEnumerable<Type>? stateNodeCache = null;
 
         private T currentState;
 
         public event Action<T> OnStateNodeChanged;
+        [ShowInInspector, ReadOnly]
         public T CurrentState => currentState;
 
 
