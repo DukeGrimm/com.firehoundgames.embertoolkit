@@ -36,10 +36,8 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
 
         protected virtual IEnumerable<Type>? GetStateNodeTypes()
         {
-            if (stateNodeCache == null)
-            {
-                stateNodeCache = GetStateNodeTypes();
-            }
+            if (stateNodeCache == null) InitializeStateNodes();
+
             //Use the assembly where the GameStates live 
             return stateNodeCache;
         }
@@ -50,7 +48,7 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
             if (stateNodeCache == null)
             {
 
-                stateNodeCache = Assembly.GetAssembly(typeof(StateNode<T>)).GetTypes().Where(t => typeof(StateNode<T>).IsAssignableFrom(t) && t.IsAbstract == false);
+                stateNodeCache = Assembly.GetAssembly(typeof(T)).GetTypes().Where(t => typeof(StateNode<T>).IsAssignableFrom(t) && t.IsAbstract == false);
             }
             foreach(var stateClass in stateNodeCache)
             {
