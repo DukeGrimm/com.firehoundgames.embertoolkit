@@ -50,7 +50,7 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
             if (stateNodeCache == null)
             {
 
-                stateNodeCache = Assembly.GetAssembly(typeof(T)).GetTypes().Where(t => typeof(T).IsAssignableFrom(t) && t.IsAbstract == false);
+                stateNodeCache = Assembly.GetAssembly(typeof(StateNode<T>)).GetTypes().Where(t => typeof(StateNode<T>).IsAssignableFrom(t) && t.IsAbstract == false);
             }
             foreach(var stateClass in stateNodeCache)
             {
