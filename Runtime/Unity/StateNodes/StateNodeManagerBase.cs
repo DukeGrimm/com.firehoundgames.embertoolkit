@@ -35,7 +35,7 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         protected override void Awake()
         {
             base.Awake();
-            if (!_Initialized) InitializeStateNodes(Assembly.GetAssembly(targetNodeType.GetType()), targetNodeType.GetType());
+            if (!_Initialized) InitializeStateNodes(Assembly.GetAssembly(targetNodeType.GetType()), targetNodeType.GetType().BaseType);
             //ChangeGameState(GameStateStage.StartUp);
         }
 
