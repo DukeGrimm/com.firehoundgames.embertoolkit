@@ -4,6 +4,7 @@ using EmberToolkit.Common.Interfaces.Unity.Behaviours.Managers.StateNodes;
 using EmberToolkit.Unity.Behaviours;
 using EmberToolkit.Unity.StateNodes;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,9 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         [ShowInInspector, ReadOnly]
         protected Dictionary<T, StateNode<T>> _States = new Dictionary<T, StateNode<T>>();
         protected bool _Initialized;
+        [OdinSerialize] StateNode<T> targetNodeType;
+        protected Assembly _nodeAssembly;
+        protected Type _targetType;
         protected IEnumerable<Type>? stateNodeCache = null;
 
         private T currentState;
@@ -31,7 +35,7 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
         protected override void Awake()
         {
             base.Awake();
-            if (!_Initialized) InitializeStateNodes();
+            if (!_Initialized) InitializeStateNodes(Assembly.GetAssembly(targetNodeType.GetType()), targetNodeType.GetType());
             //ChangeGameState(GameStateStage.StartUp);
         }
 
@@ -43,13 +47,25 @@ namespace EmberToolkit.Unity.Behaviours.StateNodes
             return stateNodeCache;
         }
 
+        protected void InitializeStateNodes(Assembly nodeAssembly, Type targetType)
+        {
+            
+            _nodeAssembly = nodeAssembly;
+            _targetType = targetType;
+            InitializeStateNodes();
+        }
+
         protected virtual void InitializeStateNodes()
         {
+            if(_nodeAssembly == null || _targetType == null)
+            {
+                Debug.LogError("StateNodeManagerBase: Node Assembly and Target Type must be set before initializing state nodes. Use InitializeStateNodes(Asssembly,Type) in Awake to Set.");
+                return;
+            }
             _States.Clear();
             if (stateNodeCache == null)
             {
-
-                stateNodeCache = Assembly.GetAssembly(typeof(T)).GetTypes().Where(t => typeof(T).IsAssignableFrom(t) && t.IsAbstract == false);
+                stateNodeCache = _nodeAssembly.GetTypes().Where(t => _targetType.IsAssignableFrom(t) && t.IsAbstract == false);
             }
             foreach(var stateClass in stateNodeCache)
             {
