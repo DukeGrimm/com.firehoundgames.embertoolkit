@@ -113,7 +113,7 @@ namespace EmberToolkit.Unity.Behaviours
                 eventSubscriptions = new List<EventSubscription>();
 
 
-            if (eventSubscriptions.FirstOrDefault(x => x.EventName == eventName) == null)
+            if (eventSubscriptions.FirstOrDefault(x => x.EventName == eventName && x.EventSource == eventSource) == null)
             {
                 EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup);
                 newEvent.Subscribe();
@@ -130,7 +130,7 @@ namespace EmberToolkit.Unity.Behaviours
             if (eventSubscriptionsWithArgs == null)
                 eventSubscriptionsWithArgs = new List<EventSubscription>();
 
-            if (eventSubscriptionsWithArgs.FirstOrDefault(x => x.EventName == eventName) == null)
+            if (eventSubscriptionsWithArgs.FirstOrDefault(x => x.EventName == eventName && x.EventSource == eventSource) == null)
             {
                 EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup);
                 newEvent.Subscribe();
@@ -153,11 +153,11 @@ namespace EmberToolkit.Unity.Behaviours
             }
         }
 
-        public void UnsubscribeEvent(string eventName)
+        public void UnsubscribeEvent(object eventSource, string eventName)
         {
             if (eventSubscriptions != null && eventSubscriptions.Any())
             {
-                EventSubscription subscription = eventSubscriptions.FirstOrDefault(x => x.EventName.Equals(eventName));
+                EventSubscription subscription = eventSubscriptions.FirstOrDefault(x => x.EventName.Equals(eventName) && x.EventSource == eventSource);
                 if (subscription != null)
                 {
                     subscription.Unsubscribe();
@@ -167,7 +167,7 @@ namespace EmberToolkit.Unity.Behaviours
 
             if (eventSubscriptionsWithArgs != null && eventSubscriptionsWithArgs.Any())
             {
-                EventSubscription subscription = eventSubscriptionsWithArgs.FirstOrDefault(x => x.EventName.Equals(eventName));
+                EventSubscription subscription = eventSubscriptionsWithArgs.FirstOrDefault(x => x.EventName.Equals(eventName) && x.EventSource == eventSource);
                 if (subscription != null)
                 {
                     subscription.Unsubscribe();

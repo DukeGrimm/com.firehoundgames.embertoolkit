@@ -28,6 +28,7 @@ namespace EmberToolkit.Unity.Services.Models
         }
 
         public string EventName { get { return _eventName; } }
+        public object EventSource { get { return _eventSource; } }
 
         public void Subscribe()
         {
