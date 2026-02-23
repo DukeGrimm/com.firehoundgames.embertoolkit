@@ -37,17 +37,19 @@ namespace EmberToolkit.Unity.Services.Models
                 var eventInfo = _eventSource.GetType().GetEvent(_eventName);
                 if (eventInfo != null)
                 {
-                    if (!_hasArguments)
-                    {
-                        eventInfo.AddEventHandler(_eventSource, _eventHandler);
-                        isSubscribed = true;
-                    }
-                    else
+                    try
                     {
                         var handlerType = eventInfo.EventHandlerType;
-                        var handler = Delegate.CreateDelegate(handlerType, _eventHandler.Target, _eventHandler.Method.Name);
+                        // Create a delegate of the exact event handler type from the provided delegate's target/method
+                        var handler = Delegate.CreateDelegate(handlerType, _eventHandler.Target, _eventHandler.Method);
+                        // Use the event's add method to subscribe the typed delegate
                         eventInfo.GetAddMethod().Invoke(_eventSource, new object[] { handler });
                         isSubscribed = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Optional: replace with your logging
+                        UnityEngine.Debug.LogError($"EventSubscription.Subscribe: Failed to subscribe to {_eventName} on {_eventSource.GetType().Name}: {ex}");
                     }
                 }
             }
@@ -60,17 +62,17 @@ namespace EmberToolkit.Unity.Services.Models
                 var eventInfo = _eventSource.GetType().GetEvent(_eventName);
                 if (eventInfo != null)
                 {
-                    if (!_hasArguments)
-                    {
-                        eventInfo.RemoveEventHandler(_eventSource, _eventHandler);
-                        isSubscribed = false;
-                    }
-                    else
+                    try
                     {
                         var handlerType = eventInfo.EventHandlerType;
-                        var handler = Delegate.CreateDelegate(handlerType, _eventHandler.Target, _eventHandler.Method.Name);
+                        var handler = Delegate.CreateDelegate(handlerType, _eventHandler.Target, _eventHandler.Method);
                         eventInfo.GetRemoveMethod().Invoke(_eventSource, new object[] { handler });
                         isSubscribed = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Optional: replace with your logging
+                        UnityEngine.Debug.LogError($"EventSubscription.Unsubscribe: Failed to unsubscribe from {_eventName} on {_eventSource.GetType().Name}: {ex}");
                     }
                 }
             }
