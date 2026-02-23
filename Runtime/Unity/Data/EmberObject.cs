@@ -16,12 +16,7 @@ namespace EmberToolkit.Unity.Data
         {
             _id = Guid.NewGuid();
         }
-
-        public EmberObject(string inputName)
-        {
-            _id = Guid.NewGuid();
-        }
-        public EmberObject(Guid id, string inputName)
+        public EmberObject(Guid id)
         {
             _id = id;
         }
