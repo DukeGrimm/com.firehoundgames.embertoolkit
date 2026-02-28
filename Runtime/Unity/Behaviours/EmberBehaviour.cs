@@ -102,7 +102,14 @@ namespace EmberToolkit.Unity.Behaviours
         }
         public virtual void Save() => _repo.SaveBehaviour(new SaveableBehaviour(ItemType, this));
 
-        public virtual void Load() => _repo.LoadBehaviour(id).ApplySavedFields(ItemType, this);
+        public virtual void Load()
+        {
+            if(_repo == null) {
+                Debug.LogError($"SaveLoad Repository not found for {this}. Cannot Load data.");
+                return;
+            }
+            _repo.LoadBehaviour(id).ApplySavedFields(ItemType, this);
+        }
 
         public void SetEmberId(byte[] array) => id = new Guid(array);
 
