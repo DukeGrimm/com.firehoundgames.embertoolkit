@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace EmberToolkit.Unity.Debug
+namespace EmberToolkit.Unity.Debugging
 {
     /// <summary>
     /// Forwards System.Diagnostics.Debug/Trace output into Unity's Console.
