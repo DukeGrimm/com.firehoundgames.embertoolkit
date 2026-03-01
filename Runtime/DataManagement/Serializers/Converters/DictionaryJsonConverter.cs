@@ -24,10 +24,10 @@ namespace EmberToolkit.DataManagement.Serializers.Converters
                     JObject itemObject = (JObject)property.Value;
 
                     // Get the ItemType value from the itemObject
-                    string itemType = itemObject.Value<string>("ItemType");
+                   // string itemType = itemObject.Value<string>("ItemType");
 
                     // Deserialize the item using the ItemType value
-                    T item = (T)itemObject.ToObject(Type.GetType(itemType), serializer);
+                    T item = (T)itemObject.ToObject(typeof(T), serializer);
 
                     dictionary.Add(key, item);
                 }

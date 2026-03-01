@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace EmberToolkit.DataManagement.Data
+namespace EmberToolkit.Common.DataTypes
 {
     /// <summary>
     /// Helper DTO for persisting MonoBehaviour state.
@@ -97,8 +97,23 @@ namespace EmberToolkit.DataManagement.Data
                         }
                         else
                         {
-                            // If it's not a JToken, proceed as before
-                            field.SetValue(instance, value);
+                            if (field.FieldType == typeof(System.Guid) && value is string guidStr)
+                            {
+                                try
+                                {
+                                    value = Guid.Parse(guidStr);
+                                    field.SetValue(instance, value);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Error parsing Guid for field {field.Name}: {ex.Message}");
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                field.SetValue(instance, value);
+                            }
                         }
                     }
                 }

@@ -1,5 +1,8 @@
-﻿using EmberToolkit.Common.Interfaces.Data;
+﻿using EmberToolkit.Common.DataTypes;
+using EmberToolkit.Common.Interfaces.Configuration;
+using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
+using EmberToolkit.DataManagement.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,9 +11,9 @@ using System.Text;
 
 namespace EmberToolkit.DataManagement.Repositories
 {
-    public class SaveableBehaviourRepository : Repository<ISaveableBehaviour>, ISaveableBehaviourRepository
+    public class SaveableBehaviourRepository : Repository<SaveableBehaviour>, ISaveableBehaviourRepository
     {
-        public SaveableBehaviourRepository(ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo, bool shouldSave = true) : base(saveLoadEvents, dataRepo, shouldSave)
+        public SaveableBehaviourRepository(Guid behaviourRepoId, ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo, bool shouldSave = true) : base(saveLoadEvents, dataRepo, shouldSave, behaviourRepoId)
         {
         }
 
@@ -18,7 +21,7 @@ namespace EmberToolkit.DataManagement.Repositories
 
         public List<S> GetAllObjects<S>() => GetAll<S>().ToList();
 
-        public void SaveBehaviour(ISaveableBehaviour payload)
+        public void SaveBehaviour(SaveableBehaviour payload)
         {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
             if (Get(payload.Id) != null)

@@ -1,4 +1,5 @@
-﻿using EmberToolkit.Common.Interfaces.Data;
+﻿using EmberToolkit.Common.Interfaces.Configuration;
+using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
 //using EmberToolkit.Common.Serialization;
 using System;
@@ -10,7 +11,7 @@ namespace EmberToolkit.DataManagement.Repositories
 {
     public class SaveableObjectRepository : Repository<ISaveableObject>, ISaveableObjectRepository
     {
-        public SaveableObjectRepository(ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo) : base(saveLoadEvents, dataRepo)
+        public SaveableObjectRepository(Guid objRepoId, ISaveLoadEvents saveLoadEvents, IDataRepository dataRepo) : base(saveLoadEvents, dataRepo, default, objRepoId)
         {
         }
 

@@ -29,8 +29,27 @@ namespace EmberToolkit.Integration.Configurator
             services.AddSingleton<IDataSerializer, EmberJsonSerializer>(); //"C:\\temp\\Personal\\SaveData"
             services.AddSingleton<IDataRepository, DataRepository>();
             services.AddSingleton<SaveLoadController>().AddInterfaces<SaveLoadController>();
-            services.AddSingleton<SaveableObjectRepository>().AddInterfaces<SaveableObjectRepository>();
-            services.AddSingleton<SaveableBehaviourRepository>().AddInterfaces<SaveableBehaviourRepository>();
+            services.AddSingleton<SaveableObjectRepository>(provider =>
+            {
+                var saveLoad = provider.GetRequiredService<ISaveLoadEvents>();
+                var dataRepo = provider.GetRequiredService<IDataRepository>();
+
+                var settings = provider.GetService<IEmberSettings>();
+                Guid repoGuid = Guid.Empty;
+                if (settings != null && settings.ObjectRepoID != Guid.Empty) repoGuid = settings.ObjectRepoID;
+                return new SaveableObjectRepository(repoGuid, saveLoad, dataRepo);
+            }).AddInterfaces<SaveableObjectRepository>();
+            services.AddSingleton<SaveableBehaviourRepository>(provider =>
+            {
+                var saveLoad = provider.GetRequiredService<ISaveLoadEvents>();
+                var dataRepo = provider.GetRequiredService<IDataRepository>();
+
+                var settings = provider.GetService<IEmberSettings>();
+                Guid repoGuid = Guid.Empty;
+                if (settings != null && settings.BehaviourRepoID != Guid.Empty) repoGuid = settings.BehaviourRepoID;
+
+                return new SaveableBehaviourRepository(repoGuid, saveLoad, dataRepo);
+            }).AddInterfaces<SaveableBehaviourRepository>();
 
         }
         /// <summary>

@@ -1,8 +1,7 @@
-﻿using EmberToolkit.Common.Interfaces.Data;
+﻿using EmberToolkit.Common.DataTypes;
+using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
 using EmberToolkit.Common.Interfaces.Unity.Behaviours;
-using EmberToolkit.DataManagement.Data;
-using EmberToolkit.Unity.Data;
 using EmberToolkit.Unity.Services;
 using EmberToolkit.Unity.Services.Models;
 using Sirenix.OdinInspector;
