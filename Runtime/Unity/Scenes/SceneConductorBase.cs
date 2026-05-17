@@ -1,4 +1,5 @@
-﻿using EmberToolkit.Common.Interfaces.StateNodes;
+﻿using EmberToolkit.Common.Enum.StateNodes;
+using EmberToolkit.Common.Interfaces.StateNodes;
 using EmberToolkit.Common.Interfaces.Unity.Behaviours.Managers.StateNodes;
 using EmberToolkit.Unity.Behaviours;
 using System;
@@ -36,6 +37,18 @@ namespace EmberToolkit.Unity.Scenes
         protected void LoadScene(E gameScene)
         {
             SceneManager.LoadScene(gameScene.ToString(), LoadSceneMode.Single);
+        }
+
+        protected void DefaultSceneStateBinding(IStateNode<E> targetStateNode, E targetState, Action sceneTransitionMethod)
+        {
+            if (_stateManager.FindStateNode(out targetStateNode, targetState))
+            {
+                SubscribeEvent(targetStateNode, StateNodeEvents.OnStateEntered.ToString(), sceneTransitionMethod);
+            }
+            else
+            {
+                Debug.LogError(this.name + " could not bind " + targetState.ToString() + " state to StateNode.");
+            }
         }
     }
 }
