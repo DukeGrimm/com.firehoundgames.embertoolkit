@@ -9,7 +9,9 @@ using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace EmberToolkit.Unity.Behaviours
 {
@@ -17,9 +19,11 @@ namespace EmberToolkit.Unity.Behaviours
     {
         protected List<EventSubscription> eventSubscriptions = new List<EventSubscription>();
         protected List<EventSubscription> eventSubscriptionsWithArgs = new List<EventSubscription>();
+        protected List<UnityEventSubscription> unityEventSubscriptions = new List<UnityEventSubscription>();
         protected List<string> registeredEventNames = new List<string>();
         protected ISaveableBehaviourRepository _repo;
         private ISaveLoadEvents _saveLoadEvents;
+        protected bool WasDisabled = false;
 
 
         //GUID Work
@@ -73,16 +77,14 @@ namespace EmberToolkit.Unity.Behaviours
 
         protected virtual void OnEnable()
         {
-            if (eventSubscriptions != null && eventSubscriptionsWithArgs != null)
-            {
-                if (eventSubscriptions.Any() || eventSubscriptionsWithArgs.Any()) ResubscribeEvents();
-            }
-
+            if(WasDisabled)
+                ResubscribeEvents();
         }
 
         protected virtual void OnDisable()
         {
             UnsubscribeEvents(true);
+            WasDisabled = true;
             //Save Data to Repo in case a save event occurs while disabled.
             if (_repo != null) Save();
         }
@@ -113,6 +115,42 @@ namespace EmberToolkit.Unity.Behaviours
         public void SetEmberId(byte[] array) => id = new Guid(array);
 
         #region Events
+
+        // Parameterless UnityEvent subscription - returns the stored subscription so caller can unsubscribe later if desired.
+        public UnityEventSubscription SubscribeUnityEvent(GameObject gameObject, UnityEvent uEvent, UnityAction uAction)
+        {
+            if (unityEventSubscriptions == null)
+                unityEventSubscriptions = new List<UnityEventSubscription>();
+
+            var ueSub = UnityEventSubscription.Create(gameObject, uEvent, uAction);
+            if (!ueSub.IsEventValid())
+            {
+                Debug.LogError($"{this.name} failed to bind {uAction.Method.Name} to target {gameObject?.name ?? "null"}");
+                return ueSub;
+            }
+
+            ueSub.Subscribe();
+            unityEventSubscriptions.Add(ueSub);
+            return ueSub;
+        }
+
+        // Generic UnityEvent<T> subscription
+        public UnityEventSubscription SubscribeUnityEvent<T>(GameObject gameObject, UnityEvent<T> uEvent, UnityAction<T> uAction)
+        {
+            if (unityEventSubscriptions == null)
+                unityEventSubscriptions = new List<UnityEventSubscription>();
+
+            var ueSub = UnityEventSubscription.Create(gameObject, uEvent, uAction);
+            if (!ueSub.IsEventValid())
+            {
+                Debug.LogError($"{this.name} failed to bind {uAction.Method.Name} to target {gameObject?.name ?? "null"}");
+                return ueSub;
+            }
+
+            ueSub.Subscribe();
+            unityEventSubscriptions.Add(ueSub);
+            return ueSub;
+        }
         public void SubscribeEvent(object eventSource, string eventName, Action eventHandler, bool ignoreDisabledCleanup = false)
         {
             if (eventSubscriptions == null)
@@ -147,17 +185,102 @@ namespace EmberToolkit.Unity.Behaviours
 
         public void ResubscribeEvents()
         {
-            foreach (EventSubscription thisEvent in eventSubscriptions.Where(x => !x.IgnoreDisabled))
+            if (eventSubscriptions != null)
             {
-                thisEvent.Subscribe();
-                AddRegisteredEventName(thisEvent.EventName);
+                foreach (EventSubscription thisEvent in eventSubscriptions.Where(x => !x.IgnoreDisabled))
+                {
+                    thisEvent.Subscribe();
+                    AddRegisteredEventName(thisEvent.EventName);
+                }
             }
-            foreach (EventSubscription thisEvent in eventSubscriptionsWithArgs.Where(x => !x.IgnoreDisabled))
+            if (eventSubscriptionsWithArgs != null)
             {
-                thisEvent.Subscribe();
-                AddRegisteredEventName(thisEvent.EventName);
+                foreach (EventSubscription thisEvent in eventSubscriptionsWithArgs.Where(x => !x.IgnoreDisabled))
+                {
+                    thisEvent.Subscribe();
+                    AddRegisteredEventName(thisEvent.EventName);
+                }
+            }
+            //UnityEvents
+            if (unityEventSubscriptions != null)
+            {
+                for (int i = unityEventSubscriptions.Count - 1; i >= 0; i--)
+                {
+                    UnityEventSubscription thisEvent = unityEventSubscriptions[i];
+                    if (!thisEvent.IsEventValid())
+                        unityEventSubscriptions.Remove(thisEvent);
+                    else
+                        thisEvent.Subscribe();
+                }
             }
         }
+
+        //For Calling in scripts
+        // This uses reflection to access the internal fields of UnityEventSubscription instances stored in the list.
+        public void UnsubscribeUnityEvent(GameObject gameObject, UnityEvent uEvent, UnityAction action)
+        {
+            if (unityEventSubscriptions == null || unityEventSubscriptions.Count == 0) return;
+
+            UnityEventSubscription match = null;
+            foreach (var sub in unityEventSubscriptions)
+            {
+                if (UnityEventSubscriptionMatches(sub, gameObject, uEvent, action))
+                {
+                    match = sub;
+                    break;
+                }
+            }
+
+            if (match != null)
+            {
+                UnsubscribeUnityEvent(match);
+                unityEventSubscriptions.Remove(match);
+            }
+            else
+            {
+                Debug.LogWarning($"UnsubscribeUnityEvent: no matching subscription found for {gameObject?.name} / {uEvent?.GetType().Name}");
+            }
+        }
+
+        // Unsubscribe using the exact subscription instance returned from SubscribeUnityEvent
+        public void UnsubscribeUnityEvent(UnityEventSubscription subscription)
+        {
+            if (subscription == null) return;
+            if (unityEventSubscriptions != null && unityEventSubscriptions.Contains(subscription))
+                unityEventSubscriptions.Remove(subscription);
+            UnsubscribeUnityEventInternal(subscription);
+        }
+
+        private void UnsubscribeUnityEventInternal(UnityEventSubscription ueSub)
+        {
+            if (ueSub == null) return;
+            if (!ueSub.IsEventValid()) return;
+            ueSub.Unsubscribe();
+        }
+
+        private bool UnityEventSubscriptionMatches(UnityEventSubscription sub, GameObject expectedSource, UnityEvent expectedEvent, UnityAction expectedAction)
+        {
+            if (sub == null) return false;
+            try
+            {
+                var t = sub.GetType();
+                var sourceField = t.GetField("_sourceObject", BindingFlags.NonPublic | BindingFlags.Instance);
+                var eventField = t.GetField("_uEvent", BindingFlags.NonPublic | BindingFlags.Instance);
+                var actionField = t.GetField("_uAction", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                var src = sourceField?.GetValue(sub) as GameObject;
+                var ev = eventField?.GetValue(sub) as UnityEvent;
+                var act = actionField?.GetValue(sub) as Delegate;
+
+                return ReferenceEquals(src, expectedSource) && ReferenceEquals(ev, expectedEvent) && (act != null && act.Equals(expectedAction));
+            }
+            catch
+            {
+                // Reflection failure -> no match
+                return false;
+            }
+        }
+
 
         public void UnsubscribeEvent(object eventSource, string eventName)
         {
@@ -202,6 +325,15 @@ namespace EmberToolkit.Unity.Behaviours
                     var subscription = eventSubscriptionsWithArgs[i];
                     subscription.Unsubscribe();
                     RemoveRegisteredEventName(subscription.EventName);
+                }
+            }
+
+            //Unity Events
+            if (unityEventSubscriptions?.Count > 0)
+            {
+                foreach (var subscription in unityEventSubscriptions.ToList())
+                {
+                    UnsubscribeUnityEventInternal(subscription);
                 }
             }
 
