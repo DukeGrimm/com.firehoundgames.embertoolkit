@@ -1,4 +1,5 @@
 ﻿using EmberToolkit.Common.DataTypes;
+using EmberToolkit.Common.Enum.Events;
 using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
 using EmberToolkit.Common.Interfaces.Unity.Behaviours;
@@ -113,32 +114,28 @@ namespace EmberToolkit.Unity.Behaviours
         public void SetEmberId(byte[] array) => id = new Guid(array);
 
         #region Events
-        public void SubscribeEvent(object eventSource, string eventName, Action eventHandler, bool ignoreDisabledCleanup = false)
+        public void SubscribeEvent(object eventSource, string eventName, Action eventHandler, bool ignoreDisabledCleanup = false, eEventKind kind = eEventKind.CSharpEvent)
         {
             if (eventSubscriptions == null)
                 eventSubscriptions = new List<EventSubscription>();
 
-
             if (eventSubscriptions.FirstOrDefault(x => x.EventName == eventName && x.EventSource == eventSource) == null)
             {
-                EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup);
+                EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup, kind);
                 newEvent.Subscribe();
                 eventSubscriptions.Add(newEvent);
                 AddRegisteredEventName(eventName);
             }
-
-            // Add event name to the registered events list
-
         }
 
-        public void SubscribeEvent<TArgs>(object eventSource, string eventName, Action<TArgs> eventHandler, bool ignoreDisabledCleanup = false)
+        public void SubscribeEvent<TArgs>(object eventSource, string eventName, Action<TArgs> eventHandler, bool ignoreDisabledCleanup = false, eEventKind kind = eEventKind.CSharpEvent)
         {
             if (eventSubscriptionsWithArgs == null)
                 eventSubscriptionsWithArgs = new List<EventSubscription>();
 
             if (eventSubscriptionsWithArgs.FirstOrDefault(x => x.EventName == eventName && x.EventSource == eventSource) == null)
             {
-                EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup);
+                EventSubscription newEvent = new EventSubscription(eventSource, eventName, eventHandler, ignoreDisabledCleanup, kind);
                 newEvent.Subscribe();
                 eventSubscriptionsWithArgs.Add(newEvent);
                 AddRegisteredEventName(eventName);
