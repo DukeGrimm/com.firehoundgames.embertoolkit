@@ -1,0 +1,17 @@
+using UnityEngine;
+using EmberToolkit.Unity.Behaviours;
+
+namespace #NAMESPACE#
+{
+	public class #SCRIPTNAME# : EmberBehaviour
+	{
+		//Services
+		//Locals
+		//Events
+		protected override void Awake()
+		{
+			base.Awake();
+			// initialization
+		}
+	}
+}

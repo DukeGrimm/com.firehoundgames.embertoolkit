@@ -15,6 +15,7 @@ using UnityEngine.Events;
 
 namespace EmberToolkit.Unity.Behaviours
 {
+
     public abstract class EmberBehaviour : SerializedMonoBehaviour, IEmberBehaviour
     {
         protected List<EventSubscription> eventSubscriptions = new List<EventSubscription>();
