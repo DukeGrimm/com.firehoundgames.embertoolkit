@@ -1,4 +1,5 @@
-﻿using EmberToolkit.Common.Interfaces.Configuration;
+﻿using EmberToolkit.Common.Attributes;
+using EmberToolkit.Common.Interfaces.Configuration;
 using EmberToolkit.Common.Interfaces.Data;
 using EmberToolkit.Common.Interfaces.Repository;
 using EmberToolkit.Common.Interfaces.Services;
@@ -51,7 +52,9 @@ namespace EmberToolkit.Unity.Services
                     && interfaceType != typeof(ISerializationCallbackReceiver) 
                     && interfaceType != typeof(ISupportsPrefabSerialization))
                 {
-                    services[interfaceType] = service;
+                    //Skip interface explicity marked as do not register
+                    if(!interfaceType.IsDefined(typeof(DoNotRegisterService), false))
+                        services[interfaceType] = service;
 
                     // Check if the interface has derived interfaces and register them recursively
                     RegisterInterfaces(interfaceType, service);
